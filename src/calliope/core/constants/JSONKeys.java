@@ -105,6 +105,7 @@ public class JSONKeys
     public static String EXCLUDE = "exclude";
     public static String FILENAME = "filename";
     public static String NWORKS = "works";
+    public static String NEVENTS = "events";
     public static String NIMAGES = "images";
     public static String IMAGE = "image";
     public static String OWNER= "owner";
@@ -112,4 +113,5 @@ public class JSONKeys
     public static String LANGUAGE = "language";
     public static String WORK = "work";
     public static String SITE_URL = "site_url";
+    public static String DOCUMENTS = "documents";
 }

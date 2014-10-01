@@ -40,4 +40,6 @@ public class Database
     /** dialect definitions */
     public static String DIALECTS = "dialects";
     public static String PROJECTS = "projects";
+    public static String EVENTS = "events";
+    public static String METADATA = "metadata";
 }

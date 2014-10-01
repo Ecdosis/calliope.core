@@ -206,6 +206,19 @@ public class Utils
             return docid;
     }
     /**
+     * Reduce the docid to language/author
+     * @param a full docid to reduce to its first 2 terms
+     * @return a string
+     */
+    public static String shortDocID( String docid )
+    {
+        String[] parts = docid.split("/");
+        if ( parts.length >= 2 )
+            return parts[0]+"/"+parts[1];
+        else
+            return docid;
+    }
+    /**
      * Separate the group from the full path
      * @param path the path to split
      */

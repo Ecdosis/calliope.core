@@ -25,12 +25,15 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.util.JSON;
 import com.mongodb.BasicDBObject;
+import org.bson.types.ObjectId;
 import com.mongodb.DBObject;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.WriteResult;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSInputFile;
+import com.mongodb.WriteConcern;
 import com.mongodb.DBCursor;
+import org.json.simple.*;
 
 import java.io.InputStream;
 import java.io.FileNotFoundException;
@@ -88,6 +91,40 @@ public class MongoConnection extends Connection
             throw new DbException( "Unknown collection "+collName );
     }
     /**
+     * Fetch a resource from the server via a given field value
+     * @param collName the collection or database name
+     * @param value the value of the field
+     * @param field the field name
+     * @return the response as a string or null if not found
+     */
+    @Override
+    public String getFromDbByField( String collName, String value, String field ) 
+        throws DbException
+    {
+        try
+        {
+            connect();
+            DBCollection coll = getCollectionFromName( collName );
+            DBObject  query;
+            if ( field.equals(JSONKeys._ID) )
+            {
+                ObjectId objId = new ObjectId(value);
+                query = new BasicDBObject( field, objId );
+            }
+            else
+                query = new BasicDBObject(field,value);
+            DBObject obj = coll.findOne( query );
+            if ( obj != null )
+                return obj.toString();
+            else
+                return null;
+        }
+        catch ( Exception e )
+        {
+            throw new DbException( e );
+        }
+    }
+    /**
      * Fetch a resource from the server, or try to.
      * @param collName the collection or database name
      * @param docID the path to the resource in the collection
@@ -96,23 +133,7 @@ public class MongoConnection extends Connection
     @Override
     public String getFromDb( String collName, String docID ) throws DbException
     {
-        try
-        {
-            connect();
-            DBCollection coll = getCollectionFromName( collName );
-            DBObject query = new BasicDBObject( JSONKeys.DOCID, docID );
-            DBObject obj = coll.findOne( query );
-            if ( obj != null )
-                return obj.toString();
-            else
-                return null;
-//                throw new FileNotFoundException( "failed to find "
-//                    +collName+"/"+docID );
-        }
-        catch ( Exception e )
-        {
-            throw new DbException( e );
-        }
+        return getFromDbByField( collName,docID, JSONKeys.DOCID );
     }
     /**
      * PUT a json file to the database
@@ -143,6 +164,47 @@ public class MongoConnection extends Connection
         }
     }
     /**
+     * PUT a new json file to the database
+     * @param collName the name of the collection
+     * @param json the json to put there
+     * @return the server response
+     */
+    @Override
+    public String addToDb( String collName, String json ) throws DbException
+    {
+        try
+        {
+            DBObject doc = (DBObject) JSON.parse(json);
+            connect();
+            DBCollection coll = getCollectionFromName( collName );
+            if (doc.containsField(JSONKeys._ID) )
+            {
+                Object id = doc.get(JSONKeys._ID);
+                DBObject query = new BasicDBObject( JSONKeys._ID, id );
+                if ( query != null )
+                {
+                    WriteResult result = coll.update( query, doc, true, false );
+                    return result.toString();
+                }
+                else
+                    throw new Exception("Failed to update object "+id);
+            }
+            else
+            {
+                WriteResult result = coll.insert( doc, WriteConcern.ACKNOWLEDGED );
+                // return the new document's id
+                ObjectId id = (ObjectId)doc.get( "_id" );
+                JSONObject jDoc = (JSONObject)JSONValue.parse(result.toString());
+                jDoc.put("_id",id.toString());
+                return jDoc.toJSONString();
+            }
+        }
+        catch ( Exception e )
+        {
+            throw new DbException( e );
+        }
+    }
+    /**
      * Remove a document from the database
      * @param collName name of the collection
      * @param docID the docid of the resource 
@@ -153,11 +215,28 @@ public class MongoConnection extends Connection
     public String removeFromDb( String collName, String docID ) 
         throws DbException
     {
+        return removeFromDbByField( collName, JSONKeys.DOCID, docID );
+    }
+    /**
+     * Remove a document from the database by a unique field value
+     * @param collName name of the collection
+     * @param field the name of the field 
+     * @param value the value of the field
+     * @return the server response
+     */
+    @Override
+    public String removeFromDbByField( String collName, String field, 
+        String value ) throws DbException
+    {
         try
         {
             connect();
             DBCollection coll = getCollectionFromName( collName );
-            DBObject query = new BasicDBObject( JSONKeys.DOCID, docID );
+            //new BasicDBObject("_id", new ObjectId(idString));
+            Object obj = value;
+            if ( field.equals(JSONKeys._ID) )
+                obj = new ObjectId(value);
+            DBObject query = new BasicDBObject( field, obj );
             WriteResult result = coll.remove( query );
             return result.toString();
         }
@@ -170,10 +249,11 @@ public class MongoConnection extends Connection
      * Get a list of docIDs or file names corresponding to the regex expr
      * @param collName the collection to query
      * @param expr the regular expression to match against docid
+     * @param key the key to retrieve for each matching document
      * @return an array of matching docids, which may be empty
      */
     @Override
-    public String[] listDocuments( String collName, String expr )
+    public String[] listDocuments( String collName, String expr, String key )
         throws DbException
     {
         try
@@ -199,9 +279,9 @@ public class MongoConnection extends Connection
                     int i = 0;
                     while ( iter.hasNext() )
                     {
-                        String dId = (String)iter.next().get(JSONKeys.DOCID);
-                        if ( dId.matches(expr) )
-                            docids.add( dId );
+                        Object kId = iter.next().get(key);
+                        if ( kId != null )
+                            docids.add( kId.toString() );
                     }
                     String[] array = new String[docids.size()];
                     docids.toArray( array );
@@ -341,6 +421,17 @@ public class MongoConnection extends Connection
             if ( !coll.equals(Database.CORPIX) )
             {
                 connect();
+                DBCollection collection = getCollectionFromName( Database.METADATA );
+                DBObject  query;
+                query = new BasicDBObject(JSONKeys.DOCID,docid);
+                DBObject obj = collection.findOne( query );
+                if ( obj != null )
+                {
+                    obj.removeField(JSONKeys._ID);
+                    return obj.toString();
+                }
+                else
+                    return null;
             }
             else
             {

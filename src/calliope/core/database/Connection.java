@@ -85,14 +85,19 @@ public abstract class Connection
     }
     public abstract String[] listCollection( String coll ) 
         throws DbException;
-    public abstract String[] listDocuments( String coll, String expr )
+    public abstract String[] listDocuments( String coll, String expr, String key )
         throws DbException;
     public abstract String getFromDb( String coll, String docID ) 
         throws DbException;
+    public abstract String getFromDbByField( String coll, String value, String field ) 
+        throws DbException;
     public abstract String putToDb( String coll, String docID, String json ) 
         throws DbException;
+    public abstract String addToDb( String collName, String json ) throws DbException;
     public abstract String removeFromDb( String coll, String docID ) 
         throws DbException;
+    public abstract String removeFromDbByField( String collName, String field, 
+        String value ) throws DbException;
     public abstract byte[] getImageFromDb( String coll, String docID, MimeType type ) 
         throws DbException;
     public abstract String getMetadata( String coll, String docID );

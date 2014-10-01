@@ -4,7 +4,13 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/database/MongoConnection.java</file>
+            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/date/Qualifier.java</file>
+            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/constants/Database.java</file>
+            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/database/Connector.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/constants/JSONKeys.java</file>
+            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/Utils.java</file>
+            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/date/FuzzyDate.java</file>
+            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/database/Connection.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/database/MimeType.java</file>
         </group>
     </open-files>

@@ -17,4 +17,10 @@ public class MimeType
     {
         this.mimeType = type;
     }
+    /**
+     * Empty constructor to fill in later
+     */
+    public MimeType()
+    {
+    }
 }
