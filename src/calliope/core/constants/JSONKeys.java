@@ -114,4 +114,5 @@ public class JSONKeys
     public static String WORK = "work";
     public static String SITE_URL = "site_url";
     public static String DOCUMENTS = "documents";
+    public static String ENCODING = "encoding";
 }
