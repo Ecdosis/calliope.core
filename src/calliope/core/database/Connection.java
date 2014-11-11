@@ -17,7 +17,6 @@
  */
 package calliope.core.database;
 
-import calliope.core.exception.DbException;
 import java.awt.Rectangle;
 import calliope.core.exception.DbException;
 
