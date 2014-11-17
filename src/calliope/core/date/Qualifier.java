@@ -71,8 +71,10 @@ public enum Qualifier
             try
             {
                 Map<String,Qualifier> m = Qualifier.languages.get(
-                    locale.getCountry());
-                q = m.get(qualifier);
+                    locale.getLanguage());
+                q = m.get(lcq);
+                if ( q ==null )
+                    throw new Exception("invalid qualifier");
             }
             catch ( Exception e )
             {
@@ -80,6 +82,8 @@ public enum Qualifier
                     q = circa;
                 else if ( lcq.equals("?") )
                     q = perhaps;
+                else
+                    q = none;
             }
         }
         return q;

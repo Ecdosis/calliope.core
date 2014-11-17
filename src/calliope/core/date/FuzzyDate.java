@@ -1,18 +1,3 @@
-/* This file is part of calliope.
- *
- *  calliope is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  calliope is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with calliope.  If not, see <http://www.gnu.org/licenses/>.
- */
 package calliope.core.date;
 import java.util.Date;
 import java.text.SimpleDateFormat;
@@ -20,7 +5,6 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
-import org.json.simple.JSONObject;
 /**
  * An imprecise date object
  * @author desmond
@@ -68,7 +52,7 @@ public class FuzzyDate implements Comparable
         {
             try
             {
-                Date date = new SimpleDateFormat("MMM",locale).parse(month);
+                Date date = new SimpleDateFormat("MMM",this.locale).parse(month);
                 Calendar cal = Calendar.getInstance();
                 cal.setTime(date);
                 m = cal.get(Calendar.MONTH);
@@ -99,7 +83,7 @@ public class FuzzyDate implements Comparable
     }
     /**
      *  Parse a day
-     *  @param q the qualifier on the date
+     *  @param q the qualifier on the day
      *  @param day the numerical day as a string
      *  @return the day number -1-32 or 0 on failure 
      */
@@ -144,39 +128,21 @@ public class FuzzyDate implements Comparable
         return d;
     }
     /**
-     * Initialise a Fuzzy date from its saved JSON representation
-     * @param obj the object
-     * @param language the name of the language as a 2-character code
-     */
-    public FuzzyDate( JSONObject obj, String language )
-    {
-        if( language == null || language.length()==0 )
-            this.locale = Locale.getDefault();
-        else
-            this.locale = new Locale(language);
-        this.day = ((Number)obj.get("day")).intValue();
-        this.month = ((Number)obj.get("month")).intValue();
-        this.year = ((Number)obj.get("year")).intValue();
-        this.q = Qualifier.parse((String)obj.get("qualifier"),locale);
-    }
-    
-    /**
      *  Create a fuzzy date object using a restricted spec
      *  @param spec a restricted date format: 
      *  [?|By|Circa|c.|c|Early|Late] year
      *  or [?|By|Circa|c.|c|Early|Late] month year
      *  or [?|By|Circa|c.|c|Early|Late] day month year
-     * @param language
+     * @param locale null if default desired else a locale
      */
-    public FuzzyDate( String spec, String language )
+    public FuzzyDate( String spec, Locale locale )
     {
         int state = 0;
         int y,d,m;
-        if( language == null || language.length()==0 )
-            this.locale = Locale.getDefault();
-        else
-            this.locale = new Locale(language);
-        String[] parts = spec.split("[ -/]");
+        if ( locale == null)
+            locale = Locale.getDefault();
+        this.locale = locale;
+        String[] parts = spec.split(" ");
         // leading ? not separated from text
         for ( int i=0;i<parts.length;i++ )
         {
@@ -233,6 +199,28 @@ public class FuzzyDate implements Comparable
                     break;
             }
         }
+    }
+    /**
+     * Convert to JSON string format
+     * @return a JSON object
+     */
+    public String toJSON()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{ ");
+        sb.append("\"qualifier\": \"");
+        sb.append(this.q.toString());
+        sb.append("\", ");
+        sb.append("\"day\": ");
+        sb.append(this.day);
+        sb.append(", ");
+        sb.append("\"month\": ");
+        sb.append(this.month);
+        sb.append(", ");
+        sb.append("\"year\": ");
+        sb.append(this.year);
+        sb.append(" }");
+        return sb.toString();
     }
     /**
      * Compare two fuzzy dates
@@ -327,32 +315,11 @@ public class FuzzyDate implements Comparable
         sb.append(dayStr);
         return sb.toString();
     }
-    /**
-     * Convert to JSON string format
-     * @return a JSON object
-     */
-    public String toJSON()
-    {
-        StringBuilder sb = new StringBuilder();
-        sb.append("{ ");
-        sb.append("\"qualifier\": \"");
-        sb.append(this.q.toString());
-        sb.append("\", ");
-        sb.append("\"day\": ");
-        sb.append(this.day);
-        sb.append(", ");
-        sb.append("\"month\": ");
-        sb.append(this.month);
-        sb.append(", ");
-        sb.append("\"year\": ");
-        sb.append(this.year);
-        sb.append(" }");
-        return sb.toString();
-    }
     public static void main( String[] args )
     {
         FuzzyDate[] fds = new FuzzyDate[14];
-        fds[0] = new FuzzyDate("16-Gen-1861","it");
+        
+        fds[0] = new FuzzyDate("by 8 March 1857",null);
         fds[1] = new FuzzyDate("1833",null);
         fds[2] = new FuzzyDate("Early 1833",null);
         fds[3] = new FuzzyDate("January 1833",null);
@@ -369,5 +336,9 @@ public class FuzzyDate implements Comparable
         Arrays.sort( fds );
         for ( int i=0;i<fds.length;i++ )
             System.out.println(fds[i].toCommaSep());
+    }
+    public int getYear()
+    {
+        return this.year;
     }
 }
