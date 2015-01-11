@@ -17,6 +17,7 @@
  */
 package calliope.core.database;
 
+import calliope.core.image.MimeType;
 import java.awt.Rectangle;
 import calliope.core.exception.DbException;
 
@@ -104,6 +105,8 @@ public abstract class Connection
         int width, int height, String mimeType ) throws DbException;
     public abstract void removeImageFromDb( String coll, String docID ) 
         throws DbException;
+    public abstract String removeFromDbByExpr( String coll, String field, 
+        String expr ) throws DbException;
     public abstract Rectangle getImageDimensions( String coll, String docID, 
         MimeType type );
 }

@@ -242,5 +242,4 @@ public class Utils
         else
             return path.substring( index+1 );
     }
-    
 }

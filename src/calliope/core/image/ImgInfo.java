@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package calliope.core.database;
+package calliope.core.image;
 
 /**
  * Basic metadata about an image
@@ -20,5 +20,21 @@ public class ImgInfo
         this.width = width;
         this.height = height;
         this.mimeType = mimeType;
+    }
+    public String toString()
+    {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{ ");
+        sb.append("\"width\": ");
+        sb.append(this.width);
+        sb.append(", ");
+        sb.append( "\"height\":");
+        sb.append( this.height);
+        sb.append(", ");
+        sb.append("\"mimetype\": \" ");
+        sb.append(this.mimeType );
+        sb.append( "\"");
+        sb.append(" }");
+        return sb.toString();
     }
 }
