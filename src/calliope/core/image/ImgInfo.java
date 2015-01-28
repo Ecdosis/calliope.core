@@ -31,7 +31,7 @@ public class ImgInfo
         sb.append( "\"height\":");
         sb.append( this.height);
         sb.append(", ");
-        sb.append("\"mimetype\": \" ");
+        sb.append("\"mimetype\": \"");
         sb.append(this.mimeType );
         sb.append( "\"");
         sb.append(" }");

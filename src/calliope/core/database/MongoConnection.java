@@ -378,7 +378,7 @@ public class MongoConnection extends Connection
                 return docs;
             }
             else
-                throw new DbException( "no docs in collection "+collName );
+                return new String[0];
         }
         else
         {

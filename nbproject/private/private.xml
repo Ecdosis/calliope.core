@@ -3,10 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/image/MimeType.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/database/MongoConnection.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/constants/Database.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/date/Qualifier.java</file>
+            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/image/Corpix.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/Utils.java</file>
+            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/image/ImgInfo.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/database/Connection.java</file>
         </group>
     </open-files>

@@ -42,4 +42,5 @@ public class Database
     public static String PROJECTS = "projects";
     public static String EVENTS = "events";
     public static String METADATA = "metadata";
+    public static String ANNOTATIONS = "annotations";
 }
