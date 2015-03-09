@@ -18,6 +18,10 @@
 
 package calliope.core;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 /**
  * Some routines that need sharing by all
  * @author desmond
@@ -242,5 +246,19 @@ public class Utils
         else
             return path.substring( index+1 );
     }
-    
+    /**
+     * Pinched from Tim Bray aerc on GoogleCode
+     * @param in the input stream to read from
+     * @return a byte array containing the read data
+     * @throws IOException 
+     */
+    public static byte[] readStream(InputStream in) throws IOException 
+    {
+        byte[] buf = new byte[1024];
+        int count = 0;
+        ByteArrayOutputStream out = new ByteArrayOutputStream(8096);
+        while ((count = in.read(buf)) != -1)
+            out.write(buf, 0, count);
+        return out.toByteArray();
+    }
 }
