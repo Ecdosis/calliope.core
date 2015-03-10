@@ -54,9 +54,9 @@ public class MongoConnection extends Connection
     /** connection to database */
     DB  db;
     public MongoConnection( String user, String password, String host, 
-        int dbPort, int wsPort )
+        String dbName, int dbPort, int wsPort )
     {
-        super( user, password, host, dbPort, wsPort );
+        super( user, password, host, dbName, dbPort, wsPort );
     }
     /**
      * Connect to the database
@@ -67,7 +67,7 @@ public class MongoConnection extends Connection
         if ( db == null )
         {
             MongoClient mongoClient = new MongoClient( host, MONGO_PORT );
-            db = mongoClient.getDB("calliope");
+            db = mongoClient.getDB(this.databaseName);
             //boolean auth = db.authenticate( user, password.toCharArray() );
             //if ( !auth )
             //    throw new DbException( "MongoDB authentication failed");
@@ -314,6 +314,41 @@ public class MongoConnection extends Connection
         {
             throw new DbException( e );
         }
+    }
+    /**
+     * List all the documents in a Mongo collection
+     * @param collName the name of the collection
+     * @param key the document key to retrieve by
+     * @return a String array of document keys
+     * @throws DbException 
+     */
+    @Override
+    public String[] listCollectionByKey( String collName, String key ) 
+        throws DbException
+    {
+        try
+        {
+            connect();
+        }
+        catch ( Exception e )
+        {
+            throw new DbException( e );
+        }
+        DBCollection coll = getCollectionFromName( collName );
+        BasicDBObject keys = new BasicDBObject();
+        keys.put( key, 1 );
+        DBCursor cursor = coll.find( new BasicDBObject(), keys );
+        if ( cursor.length() > 0 )
+        {
+            String[] docs = new String[cursor.length()];
+            Iterator<DBObject> iter = cursor.iterator();
+            int i = 0;
+            while ( iter.hasNext() )
+                docs[i++] = (String)iter.next().get( key );
+            return docs;
+        }
+        else
+            throw new DbException( "no docs in collection "+collName );
     }
     /**
      * List all the documents in a Mongo collection

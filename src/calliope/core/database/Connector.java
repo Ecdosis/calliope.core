@@ -33,20 +33,21 @@ public class Connector
      * @param user the user name
      * @param password the user's password
      * @param host the domain name of the host
+     * @param dbName the name of the database
      * @param dbPort the database port
      * @param wsPort the web-service port
      * @param webRoot the full path to the web-root
      * @throws DbException 
      */
     public static void init( Repository repository, String user, 
-        String password, String host, int dbPort, int wsPort, String webRoot ) 
-        throws DbException
+        String password, String host, String dbName, int dbPort, 
+        int wsPort, String webRoot ) throws DbException
     {
         switch ( repository )
         {
             case MONGO:
                 connection = new MongoConnection(
-                    user,password,host, dbPort,wsPort );
+                    user,password,host, dbName, dbPort,wsPort );
                 break;
             default:
                 throw new DbException( "Unknown repository type "

@@ -31,15 +31,17 @@ public abstract class Connection
     String host;
     int dbPort;
     int wsPort;
+    protected String databaseName;
     
     public Connection( String user, String password, String host, 
-        int dbPort, int wsPort )
+        String dbName, int dbPort, int wsPort )
     {
         this.user = user;
         this.password = password;
         this.host = host;
         this.dbPort = dbPort;
         this.wsPort = wsPort;
+        this.databaseName = dbName;
     }
     public final int getDbPort()
     {
@@ -83,6 +85,8 @@ public abstract class Connection
         return popped;
     }
     public abstract String[] listCollection( String coll ) 
+        throws DbException;
+    public abstract String[] listCollectionByKey( String collName, String key ) 
         throws DbException;
     public abstract String[] listDocuments( String coll, String expr, String key )
         throws DbException;
