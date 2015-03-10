@@ -15,6 +15,7 @@
  */
 package calliope.core.database;
 
+import calliope.core.image.MimeType;
 import calliope.core.exception.*;
 import calliope.core.constants.Database;
 import calliope.core.constants.JSONKeys;
@@ -246,6 +247,35 @@ public class MongoConnection extends Connection
         }
     }
     /**
+     * Remove an entire set of documents that match a regular expression.
+     * @param collName the collection to remove from
+     * @param key the key field to match
+     * @param expr the regular expression for key's values
+     * @return the result
+     * @throws DbException 
+     */
+    public String removeFromDbByExpr( String collName, String key, String expr )
+        throws DbException
+    {
+        try
+        {
+            DBCollection coll = getCollectionFromName( collName );
+            if ( coll != null )
+            {
+                BasicDBObject q = new BasicDBObject();
+                q.put(key, Pattern.compile(expr) );
+                WriteResult result = coll.remove( q );
+                return result.toString();
+            }
+            else
+                throw new Exception("Collection "+collName+" not found");
+        }
+        catch ( Exception e )
+        {
+            throw new DbException(e);
+        }
+    }
+    /**
      * Get a list of docIDs or file names corresponding to the regex expr
      * @param collName the collection to query
      * @param expr the regular expression to match against docid
@@ -298,7 +328,7 @@ public class MongoConnection extends Connection
                 DBCursor curs = gfs.getFileList(q);
                 int i = 0;
                 List<DBObject> list = curs.toArray();
-                HashSet<String> set = new HashSet<>();
+                HashSet<String> set = new HashSet<String>();
                 Iterator<DBObject> iter = list.iterator();
                 while ( iter.hasNext() )
                 {
@@ -383,7 +413,7 @@ public class MongoConnection extends Connection
                 return docs;
             }
             else
-                throw new DbException( "no docs in collection "+collName );
+                return new String[0];
         }
         else
         {
@@ -391,7 +421,7 @@ public class MongoConnection extends Connection
             DBCursor curs = gfs.getFileList();
             int i = 0;
             List<DBObject> list = curs.toArray();
-            HashSet<String> set = new HashSet<>();
+            HashSet<String> set = new HashSet<String>();
             Iterator<DBObject> iter = list.iterator();
             while ( iter.hasNext() )
             {

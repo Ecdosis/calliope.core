@@ -33,20 +33,20 @@ public enum Qualifier
     static final Map<String,HashMap<String,Qualifier>> languages;
     static
     {
-        languages = new HashMap<>();
-        HashMap<String,Qualifier> itMap = new HashMap<>();
+        languages = new HashMap<String,HashMap<String,Qualifier>>();
+        HashMap<String,Qualifier> itMap = new HashMap<String,Qualifier>();
         itMap.put("early",early);
         itMap.put("perhaps",perhaps);
         itMap.put("by",by);
         itMap.put("late",late);
         itMap.put("circa",circa);
-        HashMap<String,Qualifier> esMap = new HashMap<>();
+        HashMap<String,Qualifier> esMap = new HashMap<String,Qualifier>();
         esMap.put("early",early);
         esMap.put("perhaps",perhaps);
         esMap.put("by",by);
         esMap.put("late",late);
         esMap.put("circa",circa);
-        HashMap<String,Qualifier> enMap = new HashMap<>();
+        HashMap<String,Qualifier> enMap = new HashMap<String,Qualifier>();
         enMap.put("early",early);
         enMap.put("perhaps",perhaps);
         enMap.put("by",by);
