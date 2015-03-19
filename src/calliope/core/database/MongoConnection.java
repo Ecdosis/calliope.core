@@ -374,7 +374,10 @@ public class MongoConnection extends Connection
             Iterator<DBObject> iter = cursor.iterator();
             int i = 0;
             while ( iter.hasNext() )
-                docs[i++] = (String)iter.next().get( key );
+            {
+                Object obj = iter.next().get( key );
+                docs[i++] = obj.toString();
+            }
             return docs;
         }
         else

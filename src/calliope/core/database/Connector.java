@@ -47,7 +47,7 @@ public class Connector
         {
             case MONGO:
                 connection = new MongoConnection(
-                    user,password,host, dbName, dbPort,wsPort );
+                    user,password,host, dbName, dbPort, wsPort );
                 break;
             default:
                 throw new DbException( "Unknown repository type "

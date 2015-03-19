@@ -43,4 +43,5 @@ public class Database
     public static String EVENTS = "events";
     public static String METADATA = "metadata";
     public static String ANNOTATIONS = "annotations";
+    public static String TILT = "tilt"; 
 }
