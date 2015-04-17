@@ -5,6 +5,7 @@ import java.util.Calendar;
 import java.util.Locale;
 import java.util.Arrays;
 import java.util.GregorianCalendar;
+import org.json.simple.*;
 /**
  * An imprecise date object
  * @author desmond
@@ -128,6 +129,12 @@ public class FuzzyDate implements Comparable
         return d;
     }
     /**
+     * Used by fromJSON
+     */
+    protected FuzzyDate()
+    {
+    }
+    /**
      *  Create a fuzzy date object using a restricted spec
      *  @param spec a restricted date format: 
      *  [?|By|Circa|c.|c|Early|Late] year
@@ -221,6 +228,32 @@ public class FuzzyDate implements Comparable
         sb.append(this.year);
         sb.append(" }");
         return sb.toString();
+    }
+    /**
+     * Parse a json representation of the date
+     * @param json the json
+     * @param locale the locale for the qualifiers
+     * @return a FuzzyDate object
+     */
+    public static FuzzyDate fromJSON( JSONObject jobj, Locale locale )
+    {
+        FuzzyDate fd = new FuzzyDate();
+        // date month year and qualifier fields must be present
+        Number d = ((Number)jobj.get("day"));
+        Number m = ((Number)jobj.get("month"));
+        Number y = ((Number)jobj.get("year"));
+        fd.day = (d==null)?0:d.intValue();
+        fd.month = (m==null)?-1:m.intValue();
+        fd.year = (y==null)?0:y.intValue();
+        try
+        {
+            fd.q = Qualifier.parse((String)jobj.get("qualifier"),locale);
+        }
+        catch ( Exception e )
+        {
+            fd.q = Qualifier.none;
+        }
+        return fd;
     }
     /**
      * Compare two fuzzy dates
