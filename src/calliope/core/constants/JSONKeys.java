@@ -55,6 +55,8 @@ public class JSONKeys
     public static String VERSION_SHORT = "version-short";
     /** long name for a version */
     public static String VERSION_LONG = "version-long";
+    /** array of versions for annotations */
+    public static String VERSIONS = "versions";
     /** group name */
     public static String GROUP = "group";
     /** top group */
@@ -115,4 +117,7 @@ public class JSONKeys
     public static String SITE_URL = "site_url";
     public static String DOCUMENTS = "documents";
     public static String ENCODING = "encoding";
+    public static String WIDTH = "width";
+    public static String HEIGHT = "height";
+    public static String OFFSET = "offset";
 }

@@ -26,20 +26,22 @@ import java.nio.file.Files;
  * @author desmond
  */
 public class Corpix {
-    private static final String webRoot = "/var/www/";
     /**
      * List all the images
      * @param docID the docID including the versionID
      * @return an array of docIDs
      * @throws ImageException 
      */
-    public static String[] listImages( String docID ) throws ImageException
+    public static String[] listImages( String webRoot, String docID ) throws ImageException
     {
         try
         {
             ArrayList<String> files = new ArrayList<String>();
             File dir = new File( webRoot+"corpix/"+docID );
             File[] contents = dir.listFiles();
+            if ( contents == null )
+                throw new Exception("No images in path "
+                    +dir.getAbsolutePath());
             for ( int i=0;i<contents.length;i++ )
             {
                 String name = contents[i].getName();
@@ -89,7 +91,7 @@ public class Corpix {
      * @return the image data as a byte array
      * @throws ImageException 
      */
-    public static byte[] getImage( String docID, MimeType mt ) throws ImageException
+    public static byte[] getImage( String webRoot, String docID, MimeType mt ) throws ImageException
     {
         try
         {
@@ -116,7 +118,7 @@ public class Corpix {
      * @param docID the image docID
      * @throws ImageException 
      */
-    public static void deleteImage( String docID ) throws ImageException
+    public static void deleteImage( String webRoot, String docID ) throws ImageException
     {
         try
         {
@@ -157,8 +159,8 @@ public class Corpix {
      * @param data its data
      * @throws ImageException 
      */
-    public static void addImage( String docID, String mimeType, byte[] data ) 
-        throws ImageException
+    public static void addImage( String webRoot, String docID, 
+        String mimeType, byte[] data ) throws ImageException
     {
         try
         {
@@ -186,7 +188,7 @@ public class Corpix {
      * @param mimeType the new mime type
      * @throws ImageException if something went wrong
      */
-    public static void renameImage( String oldDocID, String newDocID, 
+    public static void renameImage( String webRoot, String oldDocID, String newDocID, 
         String mimeType ) throws ImageException
     {
         try
@@ -213,7 +215,8 @@ public class Corpix {
      * @return the metadata as a JSON document
      * @throws ImageException 
      */
-    public static String getMetaData( String docID ) throws ImageException
+    public static String getMetaData( String webRoot, String docID ) 
+        throws ImageException
     {
         try
         {
@@ -227,7 +230,7 @@ public class Corpix {
             {
                 // no actual metadata: create and store it for next time
                 MimeType mt = new MimeType("");
-                byte[] data = getImage(docID,mt);
+                byte[] data = getImage(webRoot,docID,mt);
                 if ( data != null )
                 {
                     ByteArrayInputStream bis = new ByteArrayInputStream(data);

@@ -14,4 +14,5 @@ public class Formats {
     public static final String MVD_TEXT = "MVD/TEXT";
     public static final String LINK = "LINK";
     public static final String MVD = "MVD";
+    public static final String TEXT = "TEXT";
 }

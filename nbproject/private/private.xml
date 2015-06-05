@@ -3,18 +3,11 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/exception/CalliopeExceptionMessage.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/database/MongoConnection.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/date/Qualifier.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/constants/Database.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/database/Connector.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/database/Repository.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/constants/JSONKeys.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/Utils.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/exception/CalliopeException.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/date/FuzzyDate.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/database/Connection.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/exception/DbException.java</file>
+            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/constants/Database.java</file>
+            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/database/MongoConnection.java</file>
+            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/constants/Formats.java</file>
+            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/constants/JSONKeys.java</file>
         </group>
     </open-files>
 </project-private>

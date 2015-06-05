@@ -44,4 +44,5 @@ public class Database
     public static String METADATA = "metadata";
     public static String ANNOTATIONS = "annotations";
     public static String TILT = "tilt"; 
+    public static String SCRATCH = "scratch";
 }

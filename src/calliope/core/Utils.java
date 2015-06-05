@@ -48,6 +48,18 @@ public class Utils
         return sb.toString();
     }
     /**
+     * Add a "/"to the end of a path if needed
+     * @param path the original path
+     * @return the path with ONE trailing slash
+     */
+    public static String ensureSlash( String path )
+    {
+        if ( path.endsWith("/") )
+            return path;
+        else
+            return path+"/";
+    }
+    /**
      * Remove the rightmost segment of the path and resource
      * @return the remains of the path
      */

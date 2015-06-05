@@ -15,7 +15,6 @@
  */
 package calliope.core.database;
 
-import calliope.core.image.MimeType;
 import calliope.core.exception.*;
 import calliope.core.constants.Database;
 import calliope.core.constants.JSONKeys;
@@ -28,20 +27,12 @@ import com.mongodb.util.JSON;
 import com.mongodb.BasicDBObject;
 import org.bson.types.ObjectId;
 import com.mongodb.DBObject;
-import com.mongodb.gridfs.GridFSDBFile;
-import com.mongodb.WriteResult;
-import com.mongodb.gridfs.GridFS;
-import com.mongodb.gridfs.GridFSInputFile;
 import com.mongodb.WriteConcern;
 import com.mongodb.DBCursor;
 import org.json.simple.*;
+import com.mongodb.WriteResult;
 
-import java.io.InputStream;
-import java.io.FileNotFoundException;
 import java.util.regex.Pattern;
-import java.util.List;
-import java.util.HashSet;
-import java.awt.Rectangle;
 
 
 /**
@@ -55,9 +46,9 @@ public class MongoConnection extends Connection
     /** connection to database */
     DB  db;
     public MongoConnection( String user, String password, String host, 
-        String dbName, int dbPort, int wsPort )
+        String dbName, int dbPort, int wsPort, String webRoot )
     {
-        super( user, password, host, dbName, dbPort, wsPort );
+        super( user, password, host, dbName, dbPort, wsPort, webRoot );
     }
     /**
      * Connect to the database
@@ -296,49 +287,27 @@ public class MongoConnection extends Connection
             {
                 throw new DbException( e );
             }
-            if ( !collName.equals(Database.CORPIX) )
+            DBCollection coll = getCollectionFromName( collName );
+            if ( coll != null )
             {
-                DBCollection coll = getCollectionFromName( collName );
-                if ( coll != null )
-                {
-                    BasicDBObject q = new BasicDBObject();
-                    q.put(JSONKeys.DOCID, Pattern.compile(expr) );
-                    DBCursor curs = coll.find( q );
-                    ArrayList<String> docids = new ArrayList<String>();
-                    Iterator<DBObject> iter = curs.iterator();
-                    int i = 0;
-                    while ( iter.hasNext() )
-                    {
-                        Object kId = iter.next().get(key);
-                        if ( kId != null )
-                            docids.add( kId.toString() );
-                    }
-                    String[] array = new String[docids.size()];
-                    docids.toArray( array );
-                    return array;
-                }
-                else
-                    throw new DbException("collection "+collName+" not found");
-            }
-            else
-            {
-                GridFS gfs = new GridFS( db, collName );
                 BasicDBObject q = new BasicDBObject();
-                q.put(JSONKeys.FILENAME, Pattern.compile(expr) );
-                DBCursor curs = gfs.getFileList(q);
+                q.put(JSONKeys.DOCID, Pattern.compile(expr) );
+                DBCursor curs = coll.find( q );
+                ArrayList<String> docids = new ArrayList<String>();
+                Iterator<DBObject> iter = curs.iterator();
                 int i = 0;
-                List<DBObject> list = curs.toArray();
-                HashSet<String> set = new HashSet<String>();
-                Iterator<DBObject> iter = list.iterator();
                 while ( iter.hasNext() )
                 {
-                    String name = (String)iter.next().get("filename");
-                    set.add(name);
+                    Object kId = iter.next().get(key);
+                    if ( kId != null )
+                        docids.add( kId.toString() );
                 }
-                String[] docs = new String[set.size()];
-                set.toArray( docs );
-                return docs;
+                String[] array = new String[docids.size()];
+                docids.toArray( array );
+                return array;
             }
+            else
+                throw new DbException("collection "+collName+" not found");
         }
         catch ( Exception e )
         {
@@ -392,220 +361,86 @@ public class MongoConnection extends Connection
     @Override
     public String[] listCollection( String collName ) throws DbException
     {
-        if ( !collName.equals(Database.CORPIX) )
-        {
-            try
-            {
-                connect();
-            }
-            catch ( Exception e )
-            {
-                throw new DbException( e );
-            }
-            DBCollection coll = getCollectionFromName( collName );
-            BasicDBObject keys = new BasicDBObject();
-            keys.put( JSONKeys.DOCID, 1 );
-            DBCursor cursor = coll.find( new BasicDBObject(), keys );
-            if ( cursor.length() > 0 )
-            {
-                String[] docs = new String[cursor.length()];
-                Iterator<DBObject> iter = cursor.iterator();
-                int i = 0;
-                while ( iter.hasNext() )
-                    docs[i++] = (String)iter.next().get( JSONKeys.DOCID );
-                return docs;
-            }
-            else
-                return new String[0];
-        }
-        else
-        {
-            GridFS gfs = new GridFS( db, collName );
-            DBCursor curs = gfs.getFileList();
-            int i = 0;
-            List<DBObject> list = curs.toArray();
-            HashSet<String> set = new HashSet<String>();
-            Iterator<DBObject> iter = list.iterator();
-            while ( iter.hasNext() )
-            {
-                String name = (String)iter.next().get("filename");
-                set.add(name);
-            }
-            String[] docs = new String[set.size()];
-            set.toArray( docs );
-            return docs;
-        }
-    }
-    /**
-     * Get an image from the database
-     * @param collName the collection name
-     * @param docID the docid of the corpix
-     * @return the image data
-     */
-    @Override
-    public byte[] getImageFromDb( String collName, String docID, MimeType type )
-    {
         try
         {
             connect();
-            GridFS gfs = new GridFS( db, collName );
-            GridFSDBFile file = gfs.findOne( docID );
-            if ( file != null )
-            {
-                InputStream ins = file.getInputStream();
-                type.mimeType = file.getContentType();
-                long dataLen = file.getLength();
-                // this only happens if it is > 2 GB
-                if ( dataLen > Integer.MAX_VALUE )
-                    throw new DbException( "file too big (size="+dataLen+")" );
-                byte[] data = new byte[(int)dataLen];
-                int offset = 0;
-                while ( offset < dataLen )
-                {
-                    int len = ins.available();
-                    offset += ins.read( data, offset, len );
-                }
-                return data;
-            }
-            else
-                throw new FileNotFoundException(docID);
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace( System.out );
-            return null;
-        }
-    }
-    /**
-     * Get the metadata as a string
-     * @param coll the collection
-     * @param docid its filename or docid
-     * @return the metadata of the document as a string
-     */
-    public String getMetadata( String coll, String docid )
-    {
-        try
-        {
-            if ( !coll.equals(Database.CORPIX) )
-            {
-                connect();
-                DBCollection collection = getCollectionFromName( Database.METADATA );
-                DBObject  query;
-                query = new BasicDBObject(JSONKeys.DOCID,docid);
-                DBObject obj = collection.findOne( query );
-                if ( obj != null )
-                {
-                    obj.removeField(JSONKeys._ID);
-                    return obj.toString();
-                }
-                else
-                    return null;
-            }
-            else
-            {
-                GridFS gfs = new GridFS( db, coll );
-                GridFSDBFile file = gfs.findOne( docid );
-                if ( file != null )
-                {
-                    DBObject obj = file.getMetaData();
-                    return obj.toString();
-                }
-            }
-            return null;
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace( System.out );
-            return null;
-        }
-    }
-    /**
-     * Get the image dimensions without loading it
-     * @param coll the collection it is stored in
-     * @param docID the document identifier
-     * @return a Rect containing width and height only or null
-     * @param type VAR param for mime type
-     */
-    public Rectangle getImageDimensions( String coll, String docID, MimeType type )
-    {
-        try
-        {
-            connect();
-            GridFS gfs = new GridFS( db, coll );
-            GridFSDBFile file = gfs.findOne( docID );
-            if ( file != null )
-            {
-                DBObject obj = file.getMetaData();
-                Object width = obj.get("width");
-                Object height = obj.get("height");
-                if ( width != null && height != null )
-                {
-                    Integer intW = (Integer)width;
-                    Integer intH = (Integer)height;
-                    Rectangle r = new Rectangle( intW.intValue(), 
-                        intH.intValue() );
-                    type.mimeType = file.getContentType();
-                    return r;
-                }
-                else
-                    return null;
-            }
-            else
-                throw new Exception("file "+docID+" not found");
-        }
-        catch ( Exception e )
-        {
-            e.printStackTrace( System.out );
-            return null;
-        }
-    }
-    /**
-     * Store an image in the database
-     * @param collName name of the image collection
-     * @param docID the docid of the resource
-     * @param data the image data to store
-     * @param width the width of the image in pixels
-     * @param height the height of the image in pixels
-     * @param mimeType the type of the image
-     * @throws DbException 
-     */
-    @Override
-    public void putImageToDb( String collName, String docID, byte[] data, 
-        int width, int height, String mimeType ) throws DbException
-    {
-        docIDCheck( collName, docID );
-        GridFS gfs = new GridFS( db, collName );
-        GridFSInputFile	file = gfs.createFile( data );
-        file.setFilename( docID );
-        BasicDBObject r = new BasicDBObject();
-        r.put( "width", width );
-        r.put( "height", height );
-        file.setMetaData( r );
-        file.setContentType(mimeType);
-        file.save();
-    }
-    /**
-     * Delete an image from the database
-     * @param collName the collection name e.g. "corpix"
-     * @param docID the image's docid path
-     * @throws DbException 
-     */
-    @Override
-    public void removeImageFromDb( String collName, String docID ) 
-        throws DbException
-    {
-        try
-        {
-            GridFS gfs = new GridFS( db, collName );
-            GridFSDBFile file = gfs.findOne( docID );
-            if ( file == null )
-                throw new FileNotFoundException("file "+collName+"/"+docID
-                    +" not found");
-            gfs.remove( file );
         }
         catch ( Exception e )
         {
             throw new DbException( e );
+        }
+        DBCollection coll = getCollectionFromName( collName );
+        BasicDBObject keys = new BasicDBObject();
+        keys.put( JSONKeys.DOCID, 1 );
+        DBCursor cursor = coll.find( new BasicDBObject(), keys );
+        if ( cursor.length() > 0 )
+        {
+            String[] docs = new String[cursor.length()];
+            Iterator<DBObject> iter = cursor.iterator();
+            int i = 0;
+            while ( iter.hasNext() )
+                docs[i++] = (String)iter.next().get( JSONKeys.DOCID );
+            return docs;
+        }
+        else
+            return new String[0];
+    }
+    /**
+     * Get the metadata as a string
+     * @param docid its filename or docid
+     * @return the metadata of the document as a string
+     */
+    public String getMetadata( String docid )
+    {
+        try
+        {
+            connect();
+            DBCollection collection = getCollectionFromName( Database.METADATA );
+            DBObject  query;
+            query = new BasicDBObject(JSONKeys.DOCID,docid);
+            DBObject obj = collection.findOne( query );
+            if ( obj != null )
+            {
+                obj.removeField(JSONKeys._ID);
+                return obj.toString();
+            }
+            else
+                return null;
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace( System.out );
+            return null;
+        }
+    }
+    /**
+     * Update one field of a database document
+     * @param coll the collection the document is in
+     * @param findField the field to look for
+     * @param findValue the field value to search for
+     * @param setField the field to set
+     * @param setValue the new field value
+     * @throws DbException 
+     */
+    public void updateByField( String coll, String findField, 
+        Object findValue, String setField, Object setValue ) throws DbException
+    {
+        try
+        {
+            connect();
+            DBCollection collection = getCollectionFromName( coll );
+            if ( findField.equals(JSONKeys._ID) )
+                findValue = new ObjectId((String)findValue);
+            BasicDBObject update = new BasicDBObject(
+                "$set", new BasicDBObject(setField,setValue));
+            BasicDBObject query = new BasicDBObject();
+            query.put(findField,findValue);
+            WriteResult res = collection.update(query, update);
+            System.out.println(res);
+        }
+        catch ( Exception e )
+        {
+            throw new DbException(e);
         }
     }
 }

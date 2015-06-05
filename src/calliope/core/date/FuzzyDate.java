@@ -1,4 +1,5 @@
 package calliope.core.date;
+import java.text.DateFormatSymbols;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -374,4 +375,55 @@ public class FuzzyDate implements Comparable
     {
         return this.year;
     }
+    /**
+     * Convert a JSON date object into a plain text JSON string
+     * @param dateObj the date object
+     * @param locale the locate for the date (used for month names)
+     * @return the date spec
+     */
+    public static String toSpec( JSONObject dateObj, Locale locale )
+    {
+        StringBuilder spec= new StringBuilder();
+        String qualifier = (String)dateObj.get("qualifier");
+        Number dayNum = ((Number)dateObj.get("day"));
+        int day = (dayNum!=null)?dayNum.intValue():0;
+        if ( qualifier != null && !qualifier.equals("none") )
+        {
+            spec.append((String)dateObj.get("qualifier"));
+            spec.append(" ");
+        }
+        if ( dateObj.get("day") != null && day > 0 && day < 32 )
+        {
+            spec.append(((Number)dateObj.get("day")).toString());
+            spec.append(" ");
+        }
+        if ( dateObj.get("month") != null )
+        {
+            int m = ((Number)dateObj.get("month")).intValue();
+            String mName = "";
+            if ( m > -1 )
+                mName = getMonth( m, locale );
+            if ( mName.length()>0 )
+            {
+                spec.append(mName);
+                spec.append(" ");
+            }
+        }
+        if ( dateObj.get("year") != null )
+        {
+            spec.append(dateObj.get("year"));
+        }
+        return spec.toString();
+    }
+    /**
+     * Get a locale specific month name
+     * @param month the 0-based month value
+     * @param locale the locale
+     * @return the name of the month
+     */
+    private static String getMonth(int month, Locale locale) 
+    { 
+        return DateFormatSymbols.getInstance(locale).getMonths()[month]; 
+    } 
+    
 }

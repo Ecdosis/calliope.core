@@ -32,10 +32,11 @@ public abstract class Connection
     String host;
     int dbPort;
     int wsPort;
+    String webRoot;
     protected String databaseName;
     
     public Connection( String user, String password, String host, 
-        String dbName, int dbPort, int wsPort )
+        String dbName, int dbPort, int wsPort, String webRoot )
     {
         this.user = user;
         this.password = password;
@@ -43,6 +44,7 @@ public abstract class Connection
         this.dbPort = dbPort;
         this.wsPort = wsPort;
         this.databaseName = dbName;
+        this.webRoot = webRoot;
     }
     public final int getDbPort()
     {
@@ -102,15 +104,9 @@ public abstract class Connection
         throws DbException;
     public abstract String removeFromDbByField( String collName, String field, 
         String value ) throws DbException;
-    public abstract byte[] getImageFromDb( String coll, String docID, MimeType type ) 
-        throws DbException;
-    public abstract String getMetadata( String coll, String docID );
-    public abstract void putImageToDb( String coll, String docID, byte[] data, 
-        int width, int height, String mimeType ) throws DbException;
-    public abstract void removeImageFromDb( String coll, String docID ) 
-        throws DbException;
+    public abstract String getMetadata( String docID );
     public abstract String removeFromDbByExpr( String coll, String field, 
         String expr ) throws DbException;
-    public abstract Rectangle getImageDimensions( String coll, String docID, 
-        MimeType type );
+    public abstract void  updateByField( String coll, String findField, 
+        Object findValue, String setField, Object setValue ) throws DbException;
 }
