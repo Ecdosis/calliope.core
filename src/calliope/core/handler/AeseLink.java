@@ -55,7 +55,7 @@ public class AeseLink
      * @param json the link in JSON format
      * @return the data as a byte array. caller should know the format
      */
-    private static byte[] readLinkData( JSONObject json ) throws LoginException
+    private static char[] readLinkData( JSONObject json ) throws LoginException
     {
         try
         {
@@ -100,9 +100,10 @@ public class AeseLink
                 }
                 InputStream is = conn.getInputStream();
                 byte[] bdata = Utils.readStream( is );
+                String text = new String(bdata,"UTF-8");
                 //long end = System.currentTimeMillis();
                 //System.out.println("time taken="+(end-start)+" milliseconds");
-                return bdata;
+                return text.toCharArray();
             }
             else
                 return null;
@@ -122,10 +123,10 @@ public class AeseLink
      * @return the document's content in bytes
      * @throws AeseException 
      */
-    public static byte[] readLink( JSONObject doc, String cfmt ) 
+    public static char[] readLink( JSONObject doc, String cfmt ) 
         throws CalliopeException
     {
-        byte[] data = null;
+        char[] data = null;
         String url = (String)doc.get( JSONKeys.URL );
         if ( url == null )
             throw new CalliopeException("empty URL");

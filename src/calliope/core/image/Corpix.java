@@ -8,6 +8,7 @@ package calliope.core.image;
 import calliope.core.database.Connection;
 import calliope.core.database.Connector;
 import calliope.core.exception.ImageException;
+import calliope.core.Utils;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
@@ -28,31 +29,47 @@ import java.nio.file.Files;
 public class Corpix {
     /**
      * List all the images
+     * @param webRoot the root directory of the web server
      * @param docID the docID including the versionID
      * @return an array of docIDs
      * @throws ImageException 
      */
-    public static String[] listImages( String webRoot, String docID ) throws ImageException
+    public static String[] listImages( String webRoot, String docID ) 
+        throws ImageException
     {
         try
         {
             ArrayList<String> files = new ArrayList<String>();
-            File dir = new File( webRoot+"corpix/"+docID );
-            File[] contents = dir.listFiles();
+            File dir = new File( webRoot+"/corpix/"+docID );
+            File[] contents = null;
+            while ( contents == null && docID.length()>0 )
+            {
+                contents = dir.listFiles();
+                if ( contents == null )
+                {
+                    docID = Utils.chomp(docID);
+                    dir = new File( webRoot+"corpix/"+docID );
+                }
+            }
             if ( contents == null )
                 throw new Exception("No images in path "
                     +dir.getAbsolutePath());
-            for ( int i=0;i<contents.length;i++ )
+            else
             {
-                String name = contents[i].getName();
-                if ( name.equals("..")||name.equals(".") )
-                    continue;
-                else 
-                    files.add( docID+"/"+name );
-            } 
-            String[] arr = new String[files.size()];
-            files.toArray( arr );
-            return arr;
+                for ( int i=0;i<contents.length;i++ )
+                {
+                    String name = contents[i].getName();
+                    if ( name.equals("..")||name.equals(".") )
+                        continue;
+                    else if ( contents[i].isFile() 
+                        && name.indexOf(".png")==-1 
+                        && name.indexOf(".jpg")==-1 )
+                        files.add( docID+"/"+name );
+                } 
+                String[] arr = new String[files.size()];
+                files.toArray( arr );
+                return arr;
+            }
         }
         catch ( Exception e )
         {
@@ -91,7 +108,8 @@ public class Corpix {
      * @return the image data as a byte array
      * @throws ImageException 
      */
-    public static byte[] getImage( String webRoot, String docID, MimeType mt ) throws ImageException
+    public static byte[] getImage( String webRoot, String docID, MimeType mt ) 
+        throws ImageException
     {
         try
         {
@@ -118,7 +136,8 @@ public class Corpix {
      * @param docID the image docID
      * @throws ImageException 
      */
-    public static void deleteImage( String webRoot, String docID ) throws ImageException
+    public static void deleteImage( String webRoot, String docID ) 
+        throws ImageException
     {
         try
         {

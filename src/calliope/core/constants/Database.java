@@ -45,4 +45,6 @@ public class Database
     public static String ANNOTATIONS = "annotations";
     public static String TILT = "tilt"; 
     public static String SCRATCH = "scratch";
+    public static String WORKS = "works";
+    public static String INDICES = "indices";
 }

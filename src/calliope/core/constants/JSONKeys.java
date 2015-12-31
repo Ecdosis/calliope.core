@@ -120,4 +120,8 @@ public class JSONKeys
     public static String WIDTH = "width";
     public static String HEIGHT = "height";
     public static String OFFSET = "offset";
+    public static String CONVERTED = "converted";
+    public static String HH_EXCEPTIONS = "hh_exceptions";
+    public static String POSITIONS = "positions";
+    public static String LINK = "link";
 }

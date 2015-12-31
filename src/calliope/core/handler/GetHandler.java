@@ -29,12 +29,12 @@ public class GetHandler {
      * @return the CorTex/CorCode version contents or null if not found
      * @throws CalliopeException if the resource couldn't be found for some reason
      */
-    protected AeseVersion doGetResourceVersion( String db, String docID, 
+    protected EcdosisVersion doGetResourceVersion( String db, String docID, 
         String vPath ) throws CalliopeException
     {
-        AeseVersion version = new AeseVersion();
+        EcdosisVersion version = new EcdosisVersion();
         JSONObject doc = null;
-        byte[] data = null;
+        char[] data = null;
         String res = null;
         //System.out.println("fetching version "+vPath );
         try
@@ -92,14 +92,7 @@ public class GetHandler {
                 version.setStyle((String)doc.get(JSONKeys.STYLE));
                 if ( body == null )
                     throw new CalliopeException("empty body");
-                try
-                {
-                    data = body.getBytes("UTF-8");
-                }
-                catch ( Exception e )
-                {
-                    throw new CalliopeException( e );
-                }
+                data = body.toCharArray();
                 version.setVersion( data );
             }
         }

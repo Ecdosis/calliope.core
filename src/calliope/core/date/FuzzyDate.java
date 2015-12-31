@@ -231,6 +231,34 @@ public class FuzzyDate implements Comparable
         return sb.toString();
     }
     /**
+     * Convert an int to a two-digit string
+     * @param num the number less than 100
+     * @return a two-digit string representation
+     */
+    String twoDigit( int num )
+    {
+        StringBuilder sb = new StringBuilder();
+        // guarantee < 100 - yeah it truncates but it shouldn't be > 100
+        num %= 100;
+        sb.append( Integer.toString(num/10) );
+        sb.append( Integer.toString(num%10) );
+        return sb.toString();
+    }
+    /**
+     * Convert to a JSON object for TImelineJS3
+     * @return a SJONObject
+     */
+    public JSONObject toJSONObject()
+    {
+        JSONObject jObj = new JSONObject();
+        jObj.put("year",Integer.toString(year));
+        if ( month > -1 )
+            jObj.put("month",twoDigit(month+1));
+        if ( day > 0 )
+            jObj.put("day",twoDigit(day));
+        return jObj;
+    }
+    /**
      * Parse a json representation of the date
      * @param json the json
      * @param locale the locale for the qualifiers
