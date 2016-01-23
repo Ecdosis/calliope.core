@@ -22,4 +22,7 @@ public class Formats {
     public static String STIL = "STIL";
     /** style of TEI corform */
     public static String TEI = "TEI";
+    public static String HTML = "html";
+    public static String JSON = "json";
+    public static String XML = "xml";
 }

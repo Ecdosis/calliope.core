@@ -31,6 +31,7 @@
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/database/MongoConnection.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/constants/Formats.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/constants/JSONKeys.java</file>
+            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/handler/EcdosisMVD.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/json/corcode/ProgressiveParser.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/json/corcode/Annotation.java</file>
         </group>
