@@ -1,7 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* This file is part of calliope.
+ *
+ *  calliope is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  calliope is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with calliope.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package calliope.core.handler;
@@ -21,12 +31,15 @@ import calliope.exception.AeseException;
 import calliope.json.corcode.Range;
 import calliope.json.corcode.STILDocument;
 import java.util.ArrayList;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Superclass that has basic in/out database functions for MVD etc
  * @author desmond
  */
-public class GetHandler {
+public class GetHandler extends Handler
+{
     protected JSONObject doGetMetadata( String docid ) 
         throws CalliopeException
     {
@@ -284,7 +297,9 @@ public class GetHandler {
                     groupEnd = offset-1;
                 }
                 else
+                {
                     throw new AeseException("ill-formed group/version record");
+                }
             }
             if ( group != null && groups.size() > 0 )
             {
@@ -300,5 +315,15 @@ public class GetHandler {
             throw new AeseException( "invalid version table: no CRs");
         return doc.toString();
     }
-
+    /**
+     * Subclass must implement
+     * @param request the http request
+     * @param response the http response
+     * @param urn the residual urn
+     * @throws CalliopeException 
+     */
+    public void handle( HttpServletRequest request, 
+        HttpServletResponse response, String urn ) throws CalliopeException
+    {
+    }
 }

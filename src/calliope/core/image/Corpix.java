@@ -1,7 +1,19 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * This file is part of calliope.core.
+ *
+ *  calliope.core is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 2 of the License, or
+ *  (at your option) any later version.
+ *
+ *  calliope.core is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with calliope.core.  If not, see <http://www.gnu.org/licenses/>.
+ *  (c) copyright Desmond Schmidt 2015
  */
 package calliope.core.image;
 
@@ -20,6 +32,8 @@ import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.io.ByteArrayInputStream;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.io.IOException;
 
 /**
  * Support image get/put etc using a simple file system stored at 
@@ -173,27 +187,54 @@ public class Corpix {
     }
     /**
      * Write an uploaded image to the image store
-     * @param docID the mage docID
+     * @param docID the image docID
+     * @param fileName the original file name
+     * @param link the link name or null
      * @param mimeType its type
      * @param data its data
      * @throws ImageException 
      */
-    public static void addImage( String webRoot, String docID, 
-        String mimeType, byte[] data ) throws ImageException
+    public static void addImage( String webRoot, String docID, String fileName,
+        String link, String mimeType, byte[] data ) throws ImageException
     {
         try
         {
             String[] parts = splitDocID( docID );
-            String suffix = MimeType.getFileSuffix( mimeType );
-            File dir = new File( webRoot+"corpix/"+parts[0]);
+            StringBuilder sb = new StringBuilder( webRoot );
+            sb.append( "/corpix" );
+            for ( int i=0;i<parts.length-1;i++ )
+            {
+                sb.append("/");
+                sb.append(parts[i]);
+            }
+            System.out.println("image path="+sb);
+            File dir = new File( sb.toString() );
             if ( !dir.exists() )
                 dir.mkdirs();
-            File image = new File( dir, parts[1]+suffix );
+            System.out.println("Created image path");
+            File image = new File( dir, fileName );
             if ( image.exists() )
                 image.delete();
+            System.out.println("Image file cleared");
+            image.createNewFile();
             FileOutputStream fos = new FileOutputStream( image );
             fos.write( data );
             fos.close();
+            // create icon
+            if ( link != null && link.length() > 0 )
+            {
+                Path newLink = Paths.get(sb.toString()+"/"+link);
+                Path target = Paths.get(sb.toString()+"/"+fileName);
+                try {
+                    Files.createSymbolicLink(newLink, target);
+                } catch (IOException x) {
+                    System.err.println(x);
+                } catch (UnsupportedOperationException x) {
+                    // Some file systems do not support symbolic links.
+                    System.err.println(x);
+                }
+
+            }
         }
         catch ( Exception e )
         {
