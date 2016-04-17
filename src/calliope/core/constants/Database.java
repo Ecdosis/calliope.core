@@ -47,4 +47,5 @@ public class Database
     public static String SCRATCH = "scratch";
     public static String WORKS = "works";
     public static String INDICES = "indices";
+    public static String RATINGS = "ratings";
 }

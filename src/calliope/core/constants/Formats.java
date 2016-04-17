@@ -26,4 +26,7 @@ public class Formats {
     public static String JSON = "json";
     public static String XML = "xml";
     public static String MARKDOWN = "x-markdown";
+    public static String MIME_MARKDOWN = "text/x-markdown";
+    public static String MIME_HTML = "text/html";
+    public static String MIME_TEXT = "text/plain";
 }

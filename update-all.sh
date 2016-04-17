@@ -15,6 +15,7 @@ if [ -e dist/calliope.core.jar ]; then
   cp dist/calliope.core.jar ../MVD/lib/
   cp dist/calliope.core.jar ../Misc/lib/
   cp dist/calliope.core.jar ../Tree/lib/
+  cp dist/calliope.core.jar ../Ratings/lib/
 else
   echo "rebuild calliope.core.jar first!"
 fi

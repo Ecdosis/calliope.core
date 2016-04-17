@@ -3,38 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/json/corcode/Range.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/json/corcode/Annotation.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/database/Connector.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/AeseFormatter.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/json/corcode/STILDocument.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/handler/GetHandler.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/json/corcode/STILDocument.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/handler/AeseLink.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/json/JSONResponse.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/handler/EcdosisVersion.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/json/corcode/ProgressiveParser.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/json/corcode/RangeReceiver.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/AeseStripper.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/json/corcode/RangeComplete.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/Utils.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/exception/CalliopeException.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/database/Connection.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/json/corcode/Range.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/date/FuzzyDate.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/handler/Handler.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/image/Corpix.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/exception/NativeException.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/exception/JSONException.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/AeseSpeller.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/constants/HTMLNames.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/constants/Database.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/database/MongoConnection.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/constants/Formats.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/constants/JSONKeys.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/handler/EcdosisMVD.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/json/corcode/ProgressiveParser.java</file>
-            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/json/corcode/Annotation.java</file>
+            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/database/Connector.java</file>
+            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/date/FuzzyDate.java</file>
         </group>
     </open-files>
 </project-private>
