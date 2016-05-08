@@ -23,11 +23,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.BitSet;
+import java.util.HashSet;
 
 /**
  * Some routines that need sharing by all
@@ -38,12 +40,79 @@ public class Utils
     static HashMap<String,String> map;
     private static final String codes = 
         "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+    private static HashSet<String> lcWords;
     static
     {
         map = new HashMap<String,String>();
         map.put("english","en");
         map.put("italian","it");
         map.put("spanish","es");
+    }
+    static
+    {
+        lcWords = new HashSet<String>();
+        lcWords.add("A");
+        lcWords.add("THE");
+        lcWords.add("OF");
+        lcWords.add("IN");
+        lcWords.add("AND");
+        lcWords.add("ON");
+        lcWords.add("FROM");
+        lcWords.add("AN");
+        lcWords.add("BY");
+    }
+    /**
+     * Simple routine to test is a lc-word is probably a Roman numeral
+     * @param word the word to test
+     * @return true if it is (validity of number not tested)
+     */
+    public static boolean isLcRomanNumber( String lcWord )
+    {
+        for ( int i=0;i<lcWord.length();i++ )
+        {
+            char token = lcWord.charAt(i);
+            switch ( token )
+            {
+                case 'x': case 'i': case 'v': case 'l': case'c': case '.':
+                    break;
+                default:
+                    if ( Character.isAlphabetic(token)
+                        ||Character.isDigit(token) )
+                       return false;
+                    else
+                        break;
+            }
+        }
+        return true;
+    }
+    /**
+     * Convert to title case (first letter capital rest lowercase)
+     * @param title the title to titelise
+     * @return a correctly capitalised title
+     */
+    public static String titleCase( String title )
+    {
+        StringBuilder sb = new StringBuilder();
+        String[] words = title.split(" ");
+        for ( int i=0;i<words.length;i++ )
+        {
+            boolean hasQuote = words[i].startsWith("\"");
+            String tcWord = words[i];
+            if ( hasQuote )
+                words[i] = words[i].substring(1);
+            if ( sb.length()>0 )
+                sb.append(" ");
+            if ( i>0 && lcWords.contains(words[i]) )
+                tcWord = words[i].toLowerCase();
+            else if ( isLcRomanNumber(tcWord.toLowerCase()) )
+                tcWord = tcWord.toUpperCase();
+            else if ( words[i].length()>1 )
+                tcWord = words[i].charAt(0)+words[i].substring(1).toLowerCase();
+            if ( hasQuote )
+                tcWord = "\""+tcWord;
+            sb.append(tcWord);
+        }
+        return sb.toString();
     }
     /**
      * Convert a URL into a form suitable as a parameter
