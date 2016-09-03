@@ -27,9 +27,8 @@ import calliope.core.constants.HTMLNames;
 import edu.luc.nmerge.mvd.MVD;
 import edu.luc.nmerge.mvd.MVDFile;
 import calliope.core.Utils;
-import calliope.exception.AeseException;
-import calliope.json.corcode.Range;
-import calliope.json.corcode.STILDocument;
+import calliope.core.json.corcode.Range;
+import calliope.core.json.corcode.STILDocument;
 import java.util.ArrayList;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,7 +56,6 @@ public class GetHandler extends Handler
             throw new CalliopeException( e );
         }
     }
-
     protected EcdosisMVD doGetMVD( String db, String docid ) 
         throws CalliopeException
     {
@@ -71,7 +69,7 @@ public class GetHandler extends Handler
             if ( jDoc != null )
             {
                 String format = (String)jDoc.get(JSONKeys.FORMAT);
-                if ( format != null && format.contains(Formats.MVD) )
+                if ( format != null )
                 {
                     return new EcdosisMVD(jDoc);
                 }
@@ -188,7 +186,7 @@ public class GetHandler extends Handler
      * @throws AeseException 
      */
     public static String markupVersionTable( String table, String listName, 
-        String listId, String version1 ) throws AeseException
+        String listId, String version1 ) throws CalliopeException
     {
         STILDocument doc = new STILDocument();
         String[] lines = table.split("\n");
@@ -298,7 +296,7 @@ public class GetHandler extends Handler
                 }
                 else
                 {
-                    throw new AeseException("ill-formed group/version record");
+                    throw new CalliopeException("ill-formed group/version record");
                 }
             }
             if ( group != null && groups.size() > 0 )
@@ -312,7 +310,7 @@ public class GetHandler extends Handler
             listDoc.put( JSONKeys.LEN, new Integer(offset-listStart) );
         }
         else
-            throw new AeseException( "invalid version table: no CRs");
+            throw new CalliopeException( "invalid version table: no CRs");
         return doc.toString();
     }
     /**

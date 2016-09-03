@@ -23,7 +23,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -264,6 +263,32 @@ public class Utils
         return urn.substring( start, end );
     }
     /**
+     * A utility function to convert an integer into an ordinal string
+     * e.g. 7->"7th", 33->"33rd"
+     * @param num an integer
+     * @return a string
+     */
+    public static String ordinal( int num)
+    {
+        int rem = num % 100;
+        if ( rem != 11 && rem != 12 && rem != 13 )
+        {
+            switch (num % 10) 
+            {
+              // Handle 1st, 2nd, 3rd
+              case 1:  
+                  return num+"st";
+              case 2:  
+                  return num+"nd";
+              case 3:  
+                  return num+"rd";
+              default:
+                  break;
+            }
+        }
+        return num+"th";
+    }
+    /**
      * Pop off the frontmost part of the path
      * @param path the path to pop
      * @return the popped path
@@ -275,6 +300,8 @@ public class Utils
         int pos = path.indexOf("/");
         if ( pos != -1 )
             path = path.substring( pos+1 );
+        else
+            path = "";
         return path;
     }
     /**
@@ -431,6 +458,26 @@ public class Utils
         {
             throw new CalliopeException( e );
         }
+    }
+    public static String subtractPaths( String longPath, String shortPath )
+    {
+        StringBuilder sb = new StringBuilder();
+        String[] parts1 = longPath.split("/");
+        String[] parts2 = shortPath.split("/");
+        for ( int i=0;i<parts1.length;i++ )
+        {
+            if ( i>= parts2.length || !parts1[i].equals(parts2[i]) )
+            {
+                for ( int j=i;j<parts1.length;j++ )
+                {
+                    if ( sb.length()> 0 )
+                        sb.append("/");
+                    sb.append(parts1[j]);
+                }
+                break;
+            }
+        }
+        return sb.toString();
     }
     /**
       * Is the given markup file HTML or something else (e.g. XML)?

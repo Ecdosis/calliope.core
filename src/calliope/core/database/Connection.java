@@ -19,8 +19,9 @@ package calliope.core.database;
 
 import calliope.core.image.MimeType;
 import java.awt.Rectangle;
+import calliope.core.constants.Database;
 import calliope.core.exception.DbException;
-
+import java.util.HashSet;
 /**
  * Abstract database API for various databases/repositories
  * @author desmond
@@ -34,7 +35,6 @@ public abstract class Connection
     int wsPort;
     String webRoot;
     protected String databaseName;
-    
     public Connection( String user, String password, String host, 
         String dbName, int dbPort, int wsPort, String webRoot )
     {
@@ -59,23 +59,6 @@ public abstract class Connection
         return host;
     }
     /**
-     * A docID is not allowed if there is already a file in its parent "dir"
-     * @throws a PathException if that is not the case
-     */
-    protected void docIDCheck( String coll, String docID ) throws DbException
-    {
-        try
-        {
-            String parent = chomp(docID);
-            if ( getFromDb(coll,parent)!=null )
-                throw new DbException("ambiguous path "+docID);
-        }
-        catch ( Exception e )
-        {
-            throw new DbException(e);
-        }
-    }  
-    /**
      * Remove the rightmost segment of the path and resource
      * @return the remains of the path
      */
@@ -95,11 +78,17 @@ public abstract class Connection
         throws DbException;
     public abstract String getFromDb( String coll, String docID ) 
         throws DbException;
+    public abstract String getFromDb( String coll, String dbase, String docID, String version )
+        throws DbException;
     public abstract String getFromDbByField( String coll, String value, String field ) 
         throws DbException;
     public abstract String putToDb( String coll, String docID, String json ) 
         throws DbException;
+    public abstract String putToDb( String collName, String dbase, 
+        String docid, String version, String json ) throws DbException;
     public abstract String addToDb( String collName, String json ) throws DbException;
+    public abstract String removeFromDb( String collName, String dbase, String docID, 
+        String version ) throws DbException;
     public abstract String removeFromDb( String coll, String docID ) 
         throws DbException;
     public abstract String removeFromDbByField( String collName, String field, 

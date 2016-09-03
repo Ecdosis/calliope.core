@@ -127,4 +127,8 @@ public class EcdosisVersion
     {
         return version.length;
     }
+    public boolean isEmpty()
+    {
+        return this.mvd==null;
+    }
 }

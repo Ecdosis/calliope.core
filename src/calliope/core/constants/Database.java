@@ -48,4 +48,6 @@ public class Database
     public static String WORKS = "works";
     public static String INDICES = "indices";
     public static String RATINGS = "ratings";
+    public static String GENEALOGY = "genealogy";
+    public static String PEOPLE = "people";
 }

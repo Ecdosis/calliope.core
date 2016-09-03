@@ -97,6 +97,7 @@ public class JSONKeys
     public static String VALUE = "value";
     public static String LOGIN = "login";
     public static String USER = "user";
+    public static String ROLES = "roles";
     public static String PASSWORD = "password";
     public static String TYPE = "type";
     public static String HOST = "host";
@@ -126,4 +127,7 @@ public class JSONKeys
     public static String LINK = "link";
     public static String SOURCES = "sources";
     public static String PROJID = "projid";
+    public static String LAYERS = "layers";
+    public static String DBASE = "dbase";
+    public static String TIME = "time";
 }

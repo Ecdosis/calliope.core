@@ -19,6 +19,8 @@ if [ -e dist/calliope.core.jar ]; then
   cp dist/calliope.core.jar ../BuildTitleIndex/lib/
   cp dist/calliope.core.jar ../BuildSubjectIndex/lib/
   cp dist/calliope.core.jar ../BuildIncipitsIndex/lib/
+  cp dist/calliope.core.jar ../Splitter/lib/
+  cp dist/calliope.core.jar ../Genealogy/lib/
 else
   echo "rebuild calliope.core.jar first!"
 fi

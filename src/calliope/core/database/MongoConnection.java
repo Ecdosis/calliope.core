@@ -116,6 +116,65 @@ public class MongoConnection extends Connection
             throw new DbException( e );
         }
     }
+    DBObject getThreeFieldQuery( String field1, String value1, String field2, 
+        String value2, String field3, String value3 )
+    {
+        DBObject query;
+        if ( field1.equals(JSONKeys._ID) )
+        {
+            ObjectId objId = new ObjectId(value1);
+            query = new BasicDBObject( field1, objId );
+        }
+        else
+            query = new BasicDBObject(field1,value1);
+        if ( field2.equals(JSONKeys._ID) )
+        {
+            ObjectId objId = new ObjectId(value2);
+            query.put(field2, objId );
+        }
+        else
+            query.put(field2,value2);
+        if ( field3.equals(JSONKeys._ID) )
+        {
+            ObjectId objId = new ObjectId(value3);
+            query.put(field3, objId );
+        }
+        else
+            query.put(field3,value3);
+        return query;
+    }
+    /**
+     * Fetch a resource from the server via a given field value
+     * @param collName the collection or database name
+     * @param field1 the first field name
+     * @param value1 the value of the first field
+     * @param field2 the second field name
+     * @param value2 the value of the second field
+     * @param field3 its field name
+     * @param value3 the third value
+     * @return the response as a string or null if not found
+     */
+    private String getFromDbByThreeFields( String collName, String field1, 
+        String value1, String field2, String value2, String field3, 
+        String value3 ) throws DbException
+    {
+        try
+        {
+            connect();
+            DBCollection coll = getCollectionFromName( collName );
+            DBObject query = getThreeFieldQuery( field1, value1, field2, 
+                value2, field3, value3 );
+            DBObject obj = coll.findOne( query );
+            if ( obj != null )
+                return obj.toString();
+            else
+                return null;
+        }
+        catch ( Exception e )
+        {
+            throw new DbException( e );
+        }
+    }
     /**
      * Fetch a resource from the server, or try to.
      * @param collName the collection or database name
@@ -126,6 +185,21 @@ public class MongoConnection extends Connection
     public String getFromDb( String collName, String docID ) throws DbException
     {
         return getFromDbByField( collName,docID, JSONKeys.DOCID );
+    }
+    /**
+     * Fetch a resource from the server, or try to.
+     * @param collName the collection or database name
+     * @param dbase the database to which this record ultimately belongs
+     * @param docID the path to the resource in the collection
+     * @param version the version of the scratch resource
+     * @return the response as a string or null if not found
+     */
+    @Override
+    public String getFromDb( String collName, String dbase, String docID, 
+        String version ) throws DbException
+    {
+        return getFromDbByThreeFields( collName, JSONKeys.DBASE, dbase, 
+            JSONKeys.DOCID, docID, JSONKeys.VERSION1, version );
     }
     /**
      * PUT a json file to the database
@@ -140,12 +214,41 @@ public class MongoConnection extends Connection
     {
         try
         {
-            docIDCheck( collName, docID );
             DBObject doc = (DBObject) JSON.parse(json);
             doc.put( JSONKeys.DOCID, docID );
             connect();
             DBCollection coll = getCollectionFromName( collName );
             DBObject query = new BasicDBObject( JSONKeys.DOCID, docID );
+            WriteResult result = coll.update( query, doc, true, false );
+            //return removeFromDb( path );
+            return result.toString();
+        }
+        catch ( Exception e )
+        {
+            throw new DbException( e );
+        }
+    }
+    /**
+     * PUT a json file to the database using dbase, docid and version
+     * @param collName the name of the collection
+     * @param dbase the name of the database 
+     * @param docid the document identifier
+     * @param version the version of the document
+     * @param json the json to put there
+     * @return the server response
+     */
+    @Override
+    public String putToDb( String collName, String dbase, 
+        String docid, String version, String json ) throws DbException
+    {
+        try
+        {
+            DBObject doc = (DBObject) JSON.parse(json);
+            doc.put( JSONKeys.DOCID, docid );
+            connect();
+            DBObject query = getThreeFieldQuery(JSONKeys.DBASE,dbase,
+                JSONKeys.DOCID,docid,JSONKeys.VERSION1, version);
+            DBCollection coll = getCollectionFromName( collName );
             WriteResult result = coll.update( query, doc, true, false );
             //return removeFromDb( path );
             return result.toString();
@@ -208,6 +311,40 @@ public class MongoConnection extends Connection
         throws DbException
     {
         return removeFromDbByField( collName, JSONKeys.DOCID, docID );
+    }
+    private String removeFromDbByThreeFields( String collName, String field1, 
+        String value1, String field2, String value2, String field3, 
+        String value3 ) throws DbException
+    {
+        try
+        {
+            connect();
+            DBCollection coll = getCollectionFromName( collName );
+            DBObject query = getThreeFieldQuery(field1,value1,field2,value2,field3,value3);
+            WriteResult result = coll.remove( query );
+            if ( result != null )
+                return result.toString();
+            else
+                return null;
+        }
+        catch ( Exception e )
+        {
+            throw new DbException( e );
+        }
+    }
+    /**
+     * Remove a document from the database
+     * @param collName name of the collection
+     * @param docID the docid of the resource 
+     * @param json the json to put there
+     * @return the server response
+     */
+    @Override
+    public String removeFromDb( String collName, String dbase, String docID, 
+        String version ) throws DbException
+    {
+        return removeFromDbByThreeFields( collName, JSONKeys.DBASE, dbase,
+            JSONKeys.DOCID, docID, JSONKeys.VERSION1, version );
     }
     /**
      * Remove a document from the database by a unique field value
@@ -344,13 +481,21 @@ public class MongoConnection extends Connection
             int i = 0;
             while ( iter.hasNext() )
             {
-                Object obj = iter.next().get( key );
-                docs[i++] = obj.toString();
+                DBObject dbObj = iter.next();
+                Object obj = dbObj.get( key );
+                if ( key.equals(JSONKeys._ID) )
+                {
+                    ObjectId id = (ObjectId)dbObj.get(JSONKeys._ID);
+                    obj = id.toStringMongod();
+                    docs[i++] = (String)obj;
+                }
+                else
+                    docs[i++] = obj.toString();
             }
             return docs;
         }
         else
-            throw new DbException( "no docs in collection "+collName );
+            return new String[0];
     }
     /**
      * List all the documents in a Mongo collection

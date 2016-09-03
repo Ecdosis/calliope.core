@@ -14,7 +14,7 @@
  *  along with calliope.  If not, see <http://www.gnu.org/licenses/>.
  */
 package calliope.json;
-import calliope.exception.AeseException;
+import calliope.core.exception.CalliopeException;
 /**
  * A simple holder for responses returned by native methods. We pass one of 
  * these objects into the native method, it sets the fields and we get the 
@@ -85,17 +85,17 @@ public class JSONResponse
      * @return the layer's content
      * @throws AeseException 
      */
-    public String getLayer( int n ) throws AeseException
+    public String getLayer( int n ) throws CalliopeException
     {
         if ( n >= nLayers )
-            throw new AeseException("Invalid layer index "
+            throw new CalliopeException("Invalid layer index "
                 +n+" out of "+nLayers);
         return layers[n];
     }
-    public String getLayerName( int n ) throws AeseException
+    public String getLayerName( int n ) throws CalliopeException
     {
         if ( n >= nLayers )
-            throw new AeseException("Invalid layer index "
+            throw new CalliopeException("Invalid layer index "
                 +n+" out of "+nLayers);
         return names[n];
     }

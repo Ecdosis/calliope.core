@@ -20,7 +20,7 @@ import calliope.core.constants.Libraries;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import calliope.exception.AeseException;
+import calliope.core.exception.CalliopeException;
 public class AeseFormatter
 {
     /**
@@ -39,7 +39,7 @@ public class AeseFormatter
 	{
         System.loadLibrary(Libraries.AESEFORMATTER);
 	}
-    static String readStringFromFile( String fname ) throws AeseException
+    static String readStringFromFile( String fname ) throws CalliopeException
     {
         try
         {
@@ -59,7 +59,7 @@ public class AeseFormatter
         }
         catch ( Exception e )
         {
-            throw new AeseException( e );
+            throw new CalliopeException( e );
         }
     }
     /**
@@ -85,7 +85,7 @@ public class AeseFormatter
                 System.out.println("usage: java calliope.AeseFormatter "
                     +"<text-file <stil-markup-file> <css-file>");
         }
-        catch ( AeseException e )
+        catch ( CalliopeException e )
         {
             System.out.println(e.getMessage());
         }

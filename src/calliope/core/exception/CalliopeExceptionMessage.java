@@ -49,7 +49,7 @@ public class CalliopeExceptionMessage
         sb.append("<style type=\"text/css\">");
         sb.append(styles);
         sb.append("</style></head>");
-        sb.append("<body><h1>AeseServer Error</h1>");
+        sb.append("<body><h1>Ecdosis Error</h1>");
         sb.append("<div id=\"d1\"><h3>Message</h3>");
         sb.append("<p>Unfortunately, an error occurred during the previous ");
         sb.append( "operation. The following message describes the problem:</p>");
