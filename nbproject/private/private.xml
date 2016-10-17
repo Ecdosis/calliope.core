@@ -7,6 +7,7 @@
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/json/corcode/Range.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/image/MimeType.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/database/Connector.java</file>
+            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/exception/AeseException.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/date/FuzzyDate.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/AeseFormatter.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/json/corcode/STILDocument.java</file>
@@ -23,6 +24,7 @@
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/handler/EcdosisMVD.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/json/corcode/Annotation.java</file>
             <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/Utils.java</file>
+            <file>file:/home/desmond/NetBeansProjects/calliope.core/src/calliope/core/exception/CalliopeException.java</file>
         </group>
     </open-files>
 </project-private>

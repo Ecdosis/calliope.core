@@ -130,6 +130,8 @@ public class GetHandler extends Handler
                 String gName = Utils.getGroupName(vPath);
                 int vId = mvd.getVersionByNameAndGroup(sName, gName );
                 version.setMVD(mvd);
+                System.out.println(mvd.getVersionTable());
+                System.out.println("sName="+sName+" gName="+gName+" vId="+vId);
                 if ( vId != 0 )
                 {
                     data = mvd.getVersion( vId );

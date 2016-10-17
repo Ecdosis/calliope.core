@@ -26,7 +26,7 @@ public class AeseFormatter
     /**
      * Convert standoff properties into embedded markup
      * @param text the text as a string of chars
-     * @param markup an array of CorCodes
+     * @param markup an array of STIL markup sets
      * @param css an array of CSS formats
      * @param format and array of format names, e.g. STIL
      * @param output object to contain output

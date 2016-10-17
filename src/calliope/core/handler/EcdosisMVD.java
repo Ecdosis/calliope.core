@@ -58,8 +58,7 @@ public class EcdosisMVD
         this.title = (String)doc.get(JSONKeys.TITLE);
         this.version1 = (String)doc.get(JSONKeys.VERSION1);
         if ( this.version1 == null )
-             this.version1 = "base";
-                
+             this.version1 = "/base/layer-final";             
     }
     public String getFormat()
     {

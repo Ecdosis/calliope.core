@@ -581,7 +581,6 @@ public class MongoConnection extends Connection
             BasicDBObject query = new BasicDBObject();
             query.put(findField,findValue);
             WriteResult res = collection.update(query, update);
-            System.out.println(res);
         }
         catch ( Exception e )
         {
