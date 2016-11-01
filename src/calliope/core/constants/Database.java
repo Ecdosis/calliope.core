@@ -50,4 +50,5 @@ public class Database
     public static String RATINGS = "ratings";
     public static String GENEALOGY = "genealogy";
     public static String PEOPLE = "people";
+    public static String ACRONYMS = "acronyms";
 }

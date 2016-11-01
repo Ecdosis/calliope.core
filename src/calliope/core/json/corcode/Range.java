@@ -98,6 +98,10 @@ public class Range implements Comparable
             return -1;
         else if ( this.len<r.len )
             return 1;
+        else if ( this.len == 0 && r.len > 0 )
+            return -1;
+        else if ( this.len > 0 && r.len == 0 )
+            return 1;
         else
             return 0;
     }

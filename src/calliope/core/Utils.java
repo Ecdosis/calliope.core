@@ -19,6 +19,9 @@
 package calliope.core;
 
 import calliope.core.exception.CalliopeException;
+import calliope.core.database.Connection;
+import calliope.core.database.Connector;
+import calliope.core.constants.Database;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -414,6 +417,31 @@ public class Utils
             return path;
         else
             return path.substring( index+1 );
+    }
+    /**
+     * Get the projectid corresponding to the docid
+     * @param docid the document identifier
+     * @return the longest matching project id
+     */
+    public static String getProjectId( String docid )
+    {
+        try
+        {
+            String best = null;
+            Connection conn = Connector.getConnection();
+            String[] projids = conn.listCollection(Database.PROJECTS);
+            for ( int i=0;i<projids.length;i++ )
+            {
+                if ( docid.indexOf(projids[i]) == 0 
+                    && (best == null || best.length() < projids[i].length()) )
+                    best = projids[i];
+            }
+            return best;
+        }
+        catch ( Exception e )
+        {
+            return null;
+        }
     }
     /**
      * Pinched from Tim Bray aerc on GoogleCode

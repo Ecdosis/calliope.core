@@ -20,6 +20,7 @@ package calliope.core.handler;
 import edu.luc.nmerge.mvd.MVD;
 import edu.luc.nmerge.mvd.MVDFile;
 import calliope.core.constants.JSONKeys;
+import java.util.ArrayList;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONArray;
 /**
@@ -30,6 +31,7 @@ import org.json.simple.JSONArray;
 public class EcdosisMVD 
 {
     MVD mvd;
+    /** the default or single version */
     String version1;
     String format;
     String text;
@@ -59,6 +61,40 @@ public class EcdosisMVD
         this.version1 = (String)doc.get(JSONKeys.VERSION1);
         if ( this.version1 == null )
              this.version1 = "/base/layer-final";             
+    }
+    /**
+     * Get the default version
+     * @return a vid path
+     */
+    public String getVersion1()
+    {
+        return version1;
+    }
+     /**
+     * Get an array of ALL the full version names in an MVD
+     * @return a list of full version names
+     */
+    public String[] getAllVersions()
+    {
+        if ( mvd == null )
+        {
+            String[] all = new String[1];
+            all[0] = version1;
+            return all;
+        }
+        else
+        {
+            ArrayList<String> list = new ArrayList<String>();
+            int numVersions = mvd.numVersions();
+            for ( short i=1;i<=numVersions;i++ )
+            {
+                String v = mvd.getVersionId(i);
+                list.add(v);
+            }
+            String[] arr = new String[list.size()];
+            list.toArray(arr);
+            return arr;
+        }
     }
     public String getFormat()
     {
@@ -193,7 +229,36 @@ public class EcdosisMVD
             return mvd.getVersionShortName(v2);
         else
             return version1;
-    }            
+    } 
+    /**
+     * Get the numerical id of a shortened version nmae (minus /layer-)
+     */
+    public short getVersionId( String vShortName )
+    {
+        if ( mvd != null )
+        {
+            short ideal=0;
+            String[] all = getAllVersions();
+            for ( int i=0;i<all.length;i++ )
+                if ( ideal==0 && all[i].startsWith(vShortName) )
+                    ideal = (short)(i+1);
+            return ideal;
+        }
+        else
+            return 1;
+    }
+    public String getVersionLongName( short v2 )
+    {
+        if ( mvd != null )
+            return mvd.getVersionLongName(v2);
+        else
+        {
+            String version = version1;
+            if ( version.startsWith("/") )
+                version = version.substring(1);
+            return "Version "+version;
+        }
+    }  
     public int getNextVersionId( short v1 )
     {
         if ( this.mvd != null )

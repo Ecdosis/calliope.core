@@ -130,4 +130,5 @@ public class JSONKeys
     public static String LAYERS = "layers";
     public static String DBASE = "dbase";
     public static String TIME = "time";
+    public static String LONGNAME = "longname";
 }
