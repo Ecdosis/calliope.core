@@ -185,6 +185,11 @@ public class DocType {
         else
             return false;
     }
+    /**
+     * Is this an image file of a letter?
+     * @param name the bare file name
+     * @return true if it is
+     */
     public static boolean isLetterImageFile( String name )
     {
         name = isImageFile(name,3);
