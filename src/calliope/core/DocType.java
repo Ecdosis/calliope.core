@@ -95,6 +95,35 @@ public class DocType {
         }
         return null;
     }
+    public static boolean isImageFile( String name )
+    {
+        int index = name.lastIndexOf("/");
+        if ( index != -1 )
+            name = name.substring(index+1);
+        if ( isNewspaperImageFile(name)
+            || isMSorBookImageFile(name)
+            ||isLetterImageFile(name) )
+            return true;
+        else
+            return false;
+    }
+    public static String getDocidPart( String name )
+    {
+        String bare = stripSuffix(name);
+        String[] parts = bare.split("-");
+        if ( isNewspaperImageFile(name) )
+        {
+            String last = parts[parts.length-1].toLowerCase();
+            char lastChar = last.charAt(last.length()-1);
+            if ( Character.isLetter(lastChar) )
+                last = last.substring(0,last.length()-1);
+            return last;
+        }
+        else if ( isLetterImageFile(name) )
+            return rebuildExcept(parts,3);
+        else    // no docid part for regular image files
+            return "";
+    }
     public static boolean isNewspaperImageFile( String name )
     {
         name = isImageFile(name,2);
@@ -163,21 +192,21 @@ public class DocType {
     }
     public static boolean isMSorBookImageFile( String name )
     {
-        String suffix = "";
         int i;
-        name = stripSuffix(name);
+        String bare = stripSuffix(name);
+        String suffix = (name.length()>bare.length())?name.substring(bare.length()+1):"";
         if ( suffix.length() ==0 || suffixes.contains(suffix.toLowerCase()) )
         {
-            for ( i=0;i<name.length();i++ )
+            for ( i=0;i<bare.length();i++ )
             {
-                if ( !Character.isDigit(name.charAt(i)) )
+                if ( !Character.isDigit(bare.charAt(i)) )
                     return false;
-                else if ( name.charAt(i)!= '0' )
+                else if ( bare.charAt(i)!= '0' )
                     break;
             }
-            for ( int j=i;j<name.length();j++ )
+            for ( int j=i;j<bare.length();j++ )
             {
-                if ( !Character.isDigit(name.charAt(j)) )
+                if ( !Character.isDigit(bare.charAt(j)) )
                     return false;
             }
             return true;
